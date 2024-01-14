@@ -2,9 +2,9 @@
   "name": "web-form-with-express-example",
   "version": "1.0.0",
   "description": "Internal Notion intergration demo app using Express.js for a server.",
-  
+  "main": "server.js",
   "scripts": {
-    "start": ""
+    "start": "node server.js"
   },
   "dependencies": {
     "@notionhq/client": "^2.2.7",
