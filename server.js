@@ -49,7 +49,7 @@ app.get("/auth", (req, res) => {
 			res.json(response.data);
 		})
 		.catch(function (error) {
-			console.error(error);
+			res.json(error.data);
 		});
 });
 
