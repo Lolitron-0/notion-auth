@@ -1,1 +1,4 @@
-alert()
+window.onload = ()=>
+{
+    alert()
+}
