@@ -15,7 +15,7 @@ app.get("/", function (request, response) {
 });
 
 app.get("/auth", (request, response) => {
-    window.alert(response)
+    console.log(response)
 });
 
 // Create new page comments. The page ID is provided in the web form.
