@@ -23,7 +23,9 @@ app.get("/", function (request, response) {
 app.get("/auth", (request, response) => {
 	response.json({
 		body: request.body,
-		query: request.params
+		query: request.query,
+		params: request.params,
+		path: request.path,
 	})
 });
 
