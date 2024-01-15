@@ -6,13 +6,14 @@ const { Client } = require("@notionhq/client");
 const notion = new Client({ auth: process.env.NOTION_KEY });
 
 // http://expressjs.com/en/starter/static-files.html
-console.log(__dirname);
 app.use(express.static(__dirname+"/public"));
 app.use(express.json()); // for parsing application/json
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
-	response.sendFile(__dirname + "/views/index.html");
+
+
+	response.sendFile("index.html");
 });
 
 app.get("/auth", (request, response) => {
