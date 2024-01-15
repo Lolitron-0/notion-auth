@@ -51,12 +51,6 @@ app.get("/auth", (req, res) => {
 		.catch(function (error) {
 			console.error(error);
 		});
-	res.json({
-		body: req.body,
-		query: req.query,
-		params: req.params,
-		path: req.path,
-	});
 });
 
 // Create new page comments. The page ID is provided in the web form.
