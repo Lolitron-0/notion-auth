@@ -15,7 +15,7 @@ app.get("/", function (request, response) {
 });
 
 app.get("/auth", (request, response) => {
-	response.json(request)
+	response.json({message:"lol"})
 });
 
 // Create new page comments. The page ID is provided in the web form.
