@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-import axios from "axios";
+const axios = require('axios');
 
 const { Client } = require("@notionhq/client");
 const notion = new Client({ auth: process.env.NOTION_KEY });
@@ -35,7 +35,7 @@ app.get("/auth", (req, res) => {
 						":" +
 						process.env.NOTION_CLIENT_SECRET,
 					"base64"
-				),
+				).toString("base64"),
 		},
 		data: {
 			grant_type: "authorization_code",
