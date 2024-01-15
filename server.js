@@ -11,12 +11,12 @@ app.use(express.json()); // for parsing application/json
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
-	const databases = await notion.search({
-		filter: {
-		  property: "object",
-		  value: "database",
-		},
-	  })
+	// const databases = await notion.search({
+	// 	filter: {
+	// 	  property: "object",
+	// 	  value: "database",
+	// 	},
+	//   })
 	response.sendFile("index.html");
 });
 
