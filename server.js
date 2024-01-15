@@ -11,13 +11,20 @@ app.use(express.json()); // for parsing application/json
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
-
-
+	const databases = await notion.search({
+		filter: {
+		  property: "object",
+		  value: "database",
+		},
+	  })
 	response.sendFile("index.html");
 });
 
 app.get("/auth", (request, response) => {
-	response.json(request)
+	response.json({
+		body: request.body,
+		query: request.params
+	})
 });
 
 // Create new page comments. The page ID is provided in the web form.
