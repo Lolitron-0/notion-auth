@@ -1,12 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <script src="script.js"></script>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="style.css" />
+		<title>Notion auth</title>
+	</head>
+	<body>
+		<div class="container">
+			<div style="display: none;" id="error-icon">
+				<div class="circle-border"></div>
+				<div class="circle">
+					<div class="error"></div>
+				</div>
+			</div>
+			<div
+				class="success-checkmark"
+				id="success-icon"
+				style="display: none"
+			>
+				<div class="check-icon">
+					<span class="icon-line line-tip"></span>
+					<span class="icon-line line-long"></span>
+					<div class="icon-circle"></div>
+					<div class="icon-fix"></div>
+				</div>
+			</div>
+			<div class="content" id="content">
+				<h2 class="title">Авторизуйтесь в Notion</h2>
+				<p class="text">
+					Вы будете перенаправлены на страницу авторизации Notion и
+					сможете выбрать к каким страницам предоставить доступ.
+				</p>
+				<a
+					class="button"
+					id="auth-btn"
+					href="https://api.notion.com/v1/oauth/authorize?client_id=2a3101d9-4f32-46f3-8f56-598d8a978a21&response_type=code&owner=user&redirect_uri=http%3A%2F%2Flocalhost%2Fauth"
+					><img
+						src="notion.png"
+						alt=""
+						class="inline-image"
+					/>Авторизоваться</a
+				>
+			</div>
+		</div>
+		<script src="script.js"></script>
+	</body>
 </html>

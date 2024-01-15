@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const axios = require('axios');
+const axios = require("axios");
 
 const { Client } = require("@notionhq/client");
 const notion = new Client({ auth: process.env.NOTION_KEY });
@@ -21,7 +21,7 @@ app.get("/", function (req, res) {
 	res.sendFile("index.html");
 });
 
-app.get("/auth", (req, res) => {
+app.get("/auth", async (req, res) => {
 	const options = {
 		method: "POST",
 		url: "https://api.notion.com/v1/oauth/token",
@@ -31,25 +31,23 @@ app.get("/auth", (req, res) => {
 			Authorization:
 				"Basic " +
 				Buffer.from(
-					process.env.NOTION_CLIENT_ID +
-						":" +
-						process.env.NOTION_CLIENT_SECRET,
-					"base64"
+					`${process.env.NOTION_CLIENT_ID}:${process.env.NOTION_CLIENT_SECRET}`
 				).toString("base64"),
 		},
 		data: {
 			grant_type: "authorization_code",
 			code: req.query.code,
-			redirect_uri: "https://notion-auth.vercel.app",
+			redirect_uri: "http://localhost/auth",
 		},
 	};
 	axios
 		.request(options)
 		.then(function (response) {
-			res.json(response.data);
+			res.redirect("/?success=1");
 		})
 		.catch(function (error) {
-			res.json(error.data);
+			console.log(error.response);
+			res.redirect("/?error=1");
 		});
 });
 
