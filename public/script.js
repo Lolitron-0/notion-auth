@@ -16,6 +16,11 @@ window.onload = () => {
 	} else if (urlParams.get("family_id")) {
 		localStorage.setItem("family_id", urlParams.get("family_id"));
 	} else {
+		document.getElementById("spinner").style.display = "block";
+		document.getElementById("content").innerHTML = `
+		<p class="title">Загрузка</p>
+		<p class="text">Пожалуйста подождите</p>
+		`;
 		var req = new XMLHttpRequest();
 		req.open("POST", "auth");
 		req.setRequestHeader("Content-Type", "application/json");
