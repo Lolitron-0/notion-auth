@@ -34,9 +34,9 @@ app.post("/auth", async (req, res) => {
 	};
 	axios
 		.request(options)
-		.then(async function (response) {
+		.then(async function (bearerAuthResponse) {
 			const { Client } = require("@notionhq/client");
-			const notion = new Client({ auth: response.data.access_token });
+			const notion = new Client({ auth: bearerAuthResponse.data.access_token });
 
 			const databases = await notion.search({
 				filter: {
@@ -62,7 +62,11 @@ app.post("/auth", async (req, res) => {
 					],
 				},
 			});
-			const result = { family_id: req.body.family_id, events: [] };
+			const result = { 
+				family_id: req.body.family_id, 
+				events: [],
+				access_token: bearerAuthResponse.data.access_token
+			};
 			for (const e of events.results) {
 				result.events.push({
 					name: e.properties["Имя"].title[0].plain_text,
@@ -79,8 +83,12 @@ app.post("/auth", async (req, res) => {
 			console.log(result);
 			axios
 				.request(options)
-				.then(function (resp) {console.log(resp);})
-				.catch(function (err) {console.log(err);});
+				.then(function (resp) {
+					console.log(resp);
+				})
+				.catch(function (err) {
+					console.log(err);
+				});
 			res.sendStatus(200);
 		})
 		.catch(function (error) {
