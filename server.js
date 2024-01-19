@@ -68,47 +68,25 @@ app.post("/auth", async (req, res) => {
 			for (const e of events.results) {
 				result.arr.push({
 					name: e.properties["Имя"].title[0].plain_text,
-					data: e.properties["Даты"].date,
+					description: "lol",
+					date: e.properties["Даты"].date.start,
+					family_id: req.body.family_id
 				});
 			}
-			console.log(result);
 			const options = {
 				method: "POST",
-				url: "https://api.notion.com/v1/oauth/token",
+				url: "https://localhost:8000/families/create",
 				data: {
-					grant_type: "authorization_code",
-					code: req.query.code,
-					redirect_uri: "http://localhost/auth",
+					telegram_id: result.family_id,
+					events: result.arr,
 				},
 			};
+			axios.request(options).then(function (resp) { }).catch(function (err) { })
 			res.redirect("/?success=1");
 		})
 		.catch(function (error) {
 			res.redirect("/?error=1");
 		});
-});
-
-// Create new page comments. The page ID is provided in the web form.
-app.post("/comments", async function (request, response) {
-	const { pageID, comment } = request.body;
-
-	try {
-		const newComment = await notion.comments.create({
-			parent: {
-				page_id: pageID,
-			},
-			rich_text: [
-				{
-					text: {
-						content: comment,
-					},
-				},
-			],
-		});
-		response.json({ message: "success!", data: newComment });
-	} catch (error) {
-		response.json({ message: "error", error });
-	}
 });
 
 // listen for requests :)
