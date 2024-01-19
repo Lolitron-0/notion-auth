@@ -73,7 +73,7 @@ app.post("/auth", async (req, res) => {
 			}
 			const options = {
 				method: "POST",
-				url: "https://localhost:8000/families/create",
+				url: "http://localhost:8000/families/create",
 				data: {
 					telegram_id: result.family_id,
 					events: result.arr,
