@@ -62,9 +62,9 @@ app.post("/auth", async (req, res) => {
 					],
 				},
 			});
-			const result = { family_id: req.body.family_id, arr: [] };
+			const result = { family_id: req.body.family_id, events: [] };
 			for (const e of events.results) {
-				result.arr.push({
+				result.events.push({
 					name: e.properties["Имя"].title[0].plain_text,
 					description: "lol",
 					date: new Date(e.properties["Даты"].date.start),
@@ -74,10 +74,7 @@ app.post("/auth", async (req, res) => {
 			const options = {
 				method: "POST",
 				url: "http://localhost:8000/families/create",
-				data: {
-					telegram_id: result.family_id,
-					events: result.arr,
-				},
+				data: result,
 			};
 			console.log(result);
 			axios
