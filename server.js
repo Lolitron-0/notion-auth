@@ -28,7 +28,8 @@ app.post("/auth", async (req, res) => {
 		data: {
 			grant_type: "authorization_code",
 			code: req.body.code,
-			redirect_uri: "https://notion-auth.vercel.app",
+			//redirect_uri: "https://notion-auth.vercel.app",
+			redirect_uri: "http://localhost",
 		},
 	};
 	axios
