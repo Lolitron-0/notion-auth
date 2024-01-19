@@ -33,7 +33,7 @@ window.onload = () => {
 		req.onreadystatechange = function () {
 			if (req.readyState == 4 && req.status == 200) {
 				window.location.href = "/?success=1";
-			} else {
+			} else if (req.readyState == 4){
 				window.location.href = "/?error=1";
 			}
 		};

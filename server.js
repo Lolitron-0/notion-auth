@@ -8,6 +8,50 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json()); // for parsing application/json
 app.use(cookieParser());
 
+async function requestEvents(access_token, family_id) {
+	const { Client } = require("@notionhq/client");
+	const notion = new Client({ auth: access_token });
+
+	const databases = await notion.search({
+		filter: {
+			property: "object",
+			value: "database",
+		},
+	});
+	let dbId;
+	for (const res of databases.results) {
+		//console.log(res.title[0].plain_text);
+		if (res.title[0].plain_text == "Хранилище") dbId = res.id;
+	}
+	const events = await notion.databases.query({
+		database_id: dbId,
+		filter: {
+			and: [
+				{
+					property: "Тип",
+					select: {
+						equals: "Событие",
+					},
+				},
+			],
+		},
+	});
+	const result = {
+		family_id: family_id,
+		events: [],
+		access_token: access_token,
+	};
+	for (const e of events.results) {
+		result.events.push({
+			name: e.properties["Имя"].title[0].plain_text,
+			description: "lol",
+			date: new Date(e.properties["Даты"].date.start),
+			family_id: family_id,
+		});
+	}
+	return result;
+}
+
 app.get("/", function (req, res) {
 	res.sendFile("index.html");
 });
@@ -35,65 +79,32 @@ app.post("/auth", async (req, res) => {
 	axios
 		.request(options)
 		.then(async function (bearerAuthResponse) {
-			const { Client } = require("@notionhq/client");
-			const notion = new Client({ auth: bearerAuthResponse.data.access_token });
-
-			const databases = await notion.search({
-				filter: {
-					property: "object",
-					value: "database",
-				},
-			});
-			let dbId;
-			for (const res of databases.results) {
-				console.log(res.title[0].plain_text);
-				if (res.title[0].plain_text == "Хранилище") dbId = res.id;
-			}
-			const events = await notion.databases.query({
-				database_id: dbId,
-				filter: {
-					and: [
-						{
-							property: "Тип",
-							select: {
-								equals: "Событие",
-							},
-						},
-					],
-				},
-			});
-			const result = { 
-				family_id: req.body.family_id, 
-				events: [],
-				access_token: bearerAuthResponse.data.access_token
-			};
-			for (const e of events.results) {
-				result.events.push({
-					name: e.properties["Имя"].title[0].plain_text,
-					description: "lol",
-					date: new Date(e.properties["Даты"].date.start),
-					family_id: req.body.family_id,
-				});
-			}
+			const eventsResult = await requestEvents(bearerAuthResponse.data.access_token, req.body.family_id)
 			const options = {
 				method: "POST",
 				url: "http://127.0.0.1:8000/families/create",
-				data: result,
+				data: eventsResult,
 			};
-			console.log(result);
+			console.log(eventsResult);
 			axios
 				.request(options)
 				.then(function (resp) {
-					console.log(resp);
+					console.log("ok");
 				})
 				.catch(function (err) {
-					console.log(err);
+					console.log("err");
 				});
 			res.sendStatus(200);
 		})
 		.catch(function (error) {
+			//console.log(error);
 			res.sendStatus(400);
 		});
+});
+
+app.get("/events", async function (req, res) {
+	const eventsResult = await requestEvents(req.body.access_token, req.body.family_id);
+	res.json(eventsResult)
 });
 
 const listener = app.listen(process.env.PORT, function () {
