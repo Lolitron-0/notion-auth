@@ -77,6 +77,7 @@ app.post("/auth", async (req, res) => {
 					events: result.arr,
 				},
 			};
+			console.log(result);
 			axios.request(options).then(function (resp) { }).catch(function (err) { })
 			res.sendStatus(200);
 		})
