@@ -65,8 +65,8 @@ app.post("/auth", async (req, res) => {
 				result.arr.push({
 					name: e.properties["Имя"].title[0].plain_text,
 					description: "lol",
-					date: e.properties["Даты"].date.start,
-					family_id: req.body.family_id
+					date: new Date(e.properties["Даты"].date.start),
+					family_id: req.body.family_id,
 				});
 			}
 			const options = {
@@ -78,7 +78,10 @@ app.post("/auth", async (req, res) => {
 				},
 			};
 			console.log(result);
-			axios.request(options).then(function (resp) { }).catch(function (err) { })
+			axios
+				.request(options)
+				.then(function (resp) {})
+				.catch(function (err) {});
 			res.sendStatus(200);
 		})
 		.catch(function (error) {
