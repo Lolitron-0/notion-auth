@@ -45,6 +45,7 @@ app.post("/auth", async (req, res) => {
 			});
 			let dbId;
 			for (const res of databases.results) {
+				console.log(res.title[0].plain_text);
 				if (res.title[0].plain_text == "Хранилище") dbId = res.id;
 			}
 			const events = await notion.databases.query({
