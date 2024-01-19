@@ -4,14 +4,10 @@ const app = express();
 const axios = require("axios");
 const cookieParser = require("cookie-parser");
 
-// http://expressjs.com/en/starter/static-files.html
 app.use(express.static(__dirname + "/public"));
 app.use(express.json()); // for parsing application/json
 app.use(cookieParser());
 
-const families_clients = new Map();
-
-// http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (req, res) {
 	res.sendFile("index.html");
 });
@@ -32,7 +28,7 @@ app.post("/auth", async (req, res) => {
 		data: {
 			grant_type: "authorization_code",
 			code: req.body.code,
-			redirect_uri: "http://localhost",
+			redirect_uri: "https://notion-auth.vercel.app",
 		},
 	};
 	axios
@@ -89,7 +85,6 @@ app.post("/auth", async (req, res) => {
 		});
 });
 
-// listen for requests :)
 const listener = app.listen(process.env.PORT, function () {
 	console.log("Your app is listening on port " + listener.address().port);
 });
