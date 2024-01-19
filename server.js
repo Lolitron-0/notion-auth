@@ -82,10 +82,10 @@ app.post("/auth", async (req, res) => {
 				},
 			};
 			axios.request(options).then(function (resp) { }).catch(function (err) { })
-			res.redirect("/?success=1");
+			res.sendStatus(200);
 		})
 		.catch(function (error) {
-			res.redirect("/?error=1");
+			res.sendStatus(400);
 		});
 });
 
