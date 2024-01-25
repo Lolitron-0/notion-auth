@@ -37,7 +37,7 @@ async function requestEvents(access_token, family_id) {
 		},
 	});
 	const result = {
-		family_id: family_id,
+		family_id: Number(family_id),
 		events: [],
 		access_token: access_token,
 	};
@@ -46,7 +46,7 @@ async function requestEvents(access_token, family_id) {
 			name: e.properties["Имя"].title[0].plain_text,
 			description: "lol",
 			date: new Date(e.properties["Даты"].date.start),
-			family_id: family_id,
+			family_id: Number(family_id),
 		});
 	}
 	return result;
