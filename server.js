@@ -57,6 +57,7 @@ app.get("/", function (req, res) {
 });
 
 app.post("/auth", async (req, res) => {
+	console.log(req.body.family_id);
 	const options = {
 		method: "POST",
 		url: "https://api.notion.com/v1/oauth/token",

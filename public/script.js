@@ -14,6 +14,7 @@ window.onload = () => {
         `;
 		document.getElementById("error-icon").style.display = "block";
 	} else if (urlParams.get("family_id")) {
+		sessionStorage.setItem("family_id", urlParams.get("family_id"));
 		localStorage.setItem("family_id", urlParams.get("family_id"));
 	} else {
 		document.getElementById("spinner").style.display = "block";
@@ -24,16 +25,17 @@ window.onload = () => {
 		var req = new XMLHttpRequest();
 		req.open("POST", "auth");
 		req.setRequestHeader("Content-Type", "application/json");
+		console.log(sessionStorage.getItem("family_id"));
 		req.send(
 			JSON.stringify({
 				code: urlParams.get("code"),
-				family_id: localStorage.getItem("family_id"),
+				family_id: sessionStorage.getItem("family_id"),
 			})
 		);
 		req.onreadystatechange = function () {
 			if (req.readyState == 4 && req.status == 200) {
 				window.location.href = "/?success=1";
-			} else if (req.readyState == 4){
+			} else if (req.readyState == 4) {
 				window.location.href = "/?error=1";
 			}
 		};
