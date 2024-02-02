@@ -6,7 +6,7 @@ window.onload = () => {
 	} else {
 		const places = [];
 		const query = urlParams.get("coords").split(",");
-		for (let i = 0; i < query.length - 2; i+=3) {
+		for (let i = 0; i < query.length - 2; i += 3) {
 			places.push({
 				name: query[0],
 				coords: [parseFloat(query[i + 1]), parseFloat(query[i + 2])],
@@ -27,10 +27,17 @@ window.onload = () => {
 
 			for (const place of places) {
 				myMap.geoObjects.add(
-					new ymaps.Placemark(
-						place.coords,
+					new ymaps.GeoObject(
 						{
-							balloonContent: place.name,
+							geometry: {
+								type: "Point",
+								coordinates: place.coords,
+							},
+							properties: {
+								//iconContent: place.name,
+								hintContent: place.name,
+								balloonContent: place.name,
+							},
 						},
 						{
 							preset: "islands#circleIcon",

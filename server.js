@@ -99,7 +99,7 @@ app.post("/update_places", async function (req, res) {
 	});
 	let dbId = databases.results[0].id;
 
-	const places = await notion.databases.query({
+	const placesQuery = await notion.databases.query({
 		database_id: dbId,
 		filter: {
 			and: [
@@ -113,29 +113,32 @@ app.post("/update_places", async function (req, res) {
 		},
 	});
 
-	const coords = [];
+	const places = [];
 	let x, y;
-	for (const place of places.results) {
+	for (const place of placesQuery.results) {
 		x = place.properties["Широта"].rich_text[0];
 		y = place.properties["Долгота"].rich_text[0];
 		if (x && y) {
 			x = parseFloat(x.plain_text);
 			y = parseFloat(y.plain_text);
 			if (x != NaN && y != NaN) {
-				coords.push([place.properties["Имя"].title.plain_text, x, y]);
+				places.push({
+					name: place.properties["Имя"].title[0].plain_text,
+					coords: [x, y],
+				});
 			}
 		}
 	}
 
 	// https://notion-auth.vercel.app/map?update=1
 	let url = "https://notion-auth.vercel.app/map?coords=";
-	for (const coord of coords) {
+	for (const place of places) {
 		url +=
-			coord[0] +
+			place.name +
 			"," +
-			coord[1].toString() +
+			place.coords[0].toString() +
 			"," +
-			coord[2].toString() +
+			place.coords[1].toString() +
 			",";
 	}
 	if (url.at(-1) === ",") url = url.slice(0, url.length - 1);
@@ -148,7 +151,7 @@ app.post("/update_places", async function (req, res) {
 		},
 	});
 
-	res.json(places);
+	res.json(response);
 });
 
 app.post("/auth", async (req, res) => {
