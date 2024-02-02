@@ -4,7 +4,8 @@ const app = express();
 const axios = require("axios");
 const cookieParser = require("cookie-parser");
 
-app.use(express.static(__dirname + "/public"));
+const staticDir = __dirname + "/public";
+app.use(express.static(staticDir));
 app.use(express.json()); // for parsing application/json
 app.use(cookieParser());
 
@@ -56,9 +57,9 @@ app.get("/", function (req, res) {
 	res.sendFile("index.html");
 });
 
-app.get("/map", function(req, res){
-	res.sendFile("map.html");
-})
+app.get("/map", function (req, res) {
+	res.sendFile(staticDir+"/map.html");
+});
 
 app.post("/auth", async (req, res) => {
 	console.log(req.body.family_id);
@@ -84,7 +85,10 @@ app.post("/auth", async (req, res) => {
 	axios
 		.request(options)
 		.then(async function (bearerAuthResponse) {
-			const eventsResult = await requestEvents(bearerAuthResponse.data.access_token, req.body.family_id)
+			const eventsResult = await requestEvents(
+				bearerAuthResponse.data.access_token,
+				req.body.family_id
+			);
 			const options = {
 				method: "POST",
 				url: "http://127.0.0.1:8000/families/create",
@@ -108,8 +112,11 @@ app.post("/auth", async (req, res) => {
 });
 
 app.get("/events", async function (req, res) {
-	const eventsResult = await requestEvents(req.body.access_token, req.body.family_id);
-	res.json(eventsResult)
+	const eventsResult = await requestEvents(
+		req.body.access_token,
+		req.body.family_id
+	);
+	res.json(eventsResult);
 });
 
 const listener = app.listen(process.env.PORT, function () {
