@@ -54,14 +54,14 @@ async function requestEvents(access_token, family_id) {
 }
 
 app.get("/", function (req, res) {
-	console.log(req.headers);
-	console.log(req.data);
-	console.log(req.query);
-	console.log(req);
 	res.sendFile("index.html");
 });
 
 app.get("/map", function (req, res) {
+	console.log(req.headers);
+	console.log(req.data);
+	console.log(req.query);
+	console.log(req);
 	res.sendFile(staticDir+"/map.html");
 });
 
