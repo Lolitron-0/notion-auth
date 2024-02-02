@@ -61,7 +61,6 @@ app.get("/map", function (req, res) {
 	console.log(req.headers);
 	console.log(req.data);
 	console.log(req.query);
-	console.log(req);
 	res.sendFile(staticDir+"/map.html");
 });
 
