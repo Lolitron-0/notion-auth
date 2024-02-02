@@ -6,7 +6,7 @@ window.onload = () => {
 	} else {
 		const places = [];
 		const query = urlParams.get("coords").split(",");
-		for (let i = 0; i < query.length - 2; i++) {
+		for (let i = 0; i < query.length - 2; i+=3) {
 			places.push({
 				name: query[0],
 				coords: [parseFloat(query[i + 1]), parseFloat(query[i + 2])],
