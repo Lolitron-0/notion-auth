@@ -56,6 +56,10 @@ app.get("/", function (req, res) {
 	res.sendFile("index.html");
 });
 
+app.get("/map", function(req, res){
+	res.sendFile("map.html");
+})
+
 app.post("/auth", async (req, res) => {
 	console.log(req.body.family_id);
 	const options = {
