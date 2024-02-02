@@ -54,6 +54,7 @@ async function requestEvents(access_token, family_id) {
 }
 
 app.get("/", function (req, res) {
+	console.log(req);
 	res.sendFile("index.html");
 });
 
