@@ -313,7 +313,7 @@ app.post("/auth", async (req, res) => {
 			);
 			const options = {
 				method: "POST",
-				url: "http://127.0.0.1:8000/families/create",
+				url: "http://86.62.99.122:8000/families/create",
 				data: eventsResult,
 			};
 			console.log(eventsResult);
