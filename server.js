@@ -67,7 +67,7 @@ app.get("/map", function (req, res) {
 		"access_token": "token"
 	}
 */
-app.post("/update_places", async function (req, res) {
+app.post("/sync_places", async function (req, res) {
 	const { Client } = require("@notionhq/client");
 	const notion = new Client({ auth: req.body.access_token });
 
@@ -159,7 +159,7 @@ function nodeString(id, name)
 	return `<a href="https://www.notion.so/${id.replaceAll("-","")}?pvs=4" style="color:white;">${name}</a>`
 }
 
-app.post("/update_tree", async function (req, res) {
+app.post("/sync_tree", async function (req, res) {
 	const { Client } = require("@notionhq/client");
 	const notion = new Client({ auth: req.body.access_token });
 
@@ -279,7 +279,7 @@ app.post("/update_tree", async function (req, res) {
 		},
 	});
 
-	res.json();
+	res.sendStatus(200);
 });
 
 app.post("/auth", async (req, res) => {
@@ -313,7 +313,7 @@ app.post("/auth", async (req, res) => {
 			);
 			const options = {
 				method: "POST",
-				url: "http://86.62.99.122:8000/families/create",
+				url: "http://45.130.42.38:8000/families/create",
 				data: eventsResult,
 			};
 			console.log(eventsResult);
