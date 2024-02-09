@@ -24,3 +24,36 @@ body {
     align-items: center;
     flex-direction: row;
 }
+
+.button {
+    display: flex;
+    align-items: center;
+    z-index: 9;
+    margin: 1rem;
+    align-content: center;
+    justify-content: space-evenly;
+    border-radius: 0.6rem;
+    box-sizing: border-box;
+    padding: 0.7rem 1rem;
+    position: absolute;
+    margin-top: 0.5rem;
+    height: 3rem;
+    text-decoration: none;
+    font-weight: 200;
+    font-size: 1.2rem;
+    transition: ease-in-out 0.2s;
+    box-shadow: 0 0.4rem 0.5rem rgba(124, 124, 124, 0.39);
+    color: white;
+    background-color: #817f82;
+}
+
+.button:hover
+{
+    transform: scale(1.05);
+}
+
+.button:active
+{
+    filter: brightness(0.9);
+    transform: scale(0.95);
+}

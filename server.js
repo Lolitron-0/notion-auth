@@ -147,7 +147,6 @@ app.post("/tree_data", async function (req, res) {
 		person.parents = undefined;
 	}
 
-	console.log(personMap.values());
 	res.json(Array.from(personMap.values()));
 });
 
