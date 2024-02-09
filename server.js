@@ -293,16 +293,17 @@ app.post("/auth", async (req, res) => {
 				`insert into tokens(secret) values('${bearerAuthResponse.data.access_token}') returning *`
 			);
 
-			console.log(rows);
-			const treeBlock = await getTreeBlock(bearerAuthResponse.data.access_token)
+			const treeBlock = await getTreeBlock(
+				bearerAuthResponse.data.access_token
+			);
 
-			// const response = await notion.blocks.update({
-			// 	block_id: embedBlock.id,
-			// 	embed: {
-			// 		caption: [],
-			// 		url: "https://notion-auth.vercel.app/tree",
-			// 	},
-			// });
+			const response = await notion.blocks.update({
+				block_id: treeBlock.id,
+				embed: {
+					caption: [],
+					url: "https://notion-auth.vercel.app/tree?id="+rows.rows[0].id,
+				},
+			});
 
 			const eventsResult = await requestEvents(
 				bearerAuthResponse.data.access_token,
@@ -325,7 +326,7 @@ app.post("/auth", async (req, res) => {
 			res.sendStatus(200);
 		})
 		.catch(function (error) {
-			//console.log(error);
+			console.log(error);
 			res.sendStatus(400);
 		});
 });
