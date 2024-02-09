@@ -23,12 +23,30 @@ window.onload = async function () {
 				if (respJson.err) {
 					alert(respJson.err);
 				} else {
+                    FamilyTree.templates.tommy.defs = `<style>
+                    .{randId} .bft-edit-form-header, .{randId} .bft-img-button{
+                        background-color: #aeaeae;
+                    }
+                    .{randId}.male .bft-edit-form-header, .{randId}.male .bft-img-button{
+                        background-color: #817f82;
+                    }        
+                    .{randId}.male div.bft-img-button:hover{
+                        background-color: #8d5bc1;
+                    }
+                    .{randId}.female .bft-edit-form-header, .{randId}.female .bft-img-button{
+                        background-color: #8d5bc1;
+                    }        
+                    .{randId}.female div.bft-img-button:hover{
+                        background-color: #817f82;
+                    }
+</style>`;
+
 					FamilyTree.templates.tommy_male = Object.assign(
 						{},
 						FamilyTree.templates.tommy
 					);
 					FamilyTree.templates.tommy_male.node =
-						'<rect x="0" y="0" height="{h}" width="{w}" stroke-width="1" fill="#48325c" stroke="#aeaeae" rx="7" ry="7"></rect>';
+						'<rect x="0" y="0" height="{h}" width="{w}" stroke-width="1" fill="#8d5bc1" stroke="#aeaeae" rx="7" ry="7"></rect>';
 					FamilyTree.templates.tommy_female = Object.assign(
 						{},
 						FamilyTree.templates.tommy
