@@ -110,32 +110,42 @@ app.post("/tree_data", async function (req, res) {
 			parents.push(parent.id);
 		}
 
+		let gender = undefined;
+		if (person.properties["Пол"].select) {
+			gender = person.properties["Пол"].select.name == "М" ? "male" : "female"
+		}
+		else {
+			res.json({ err: "У каждого человека в базе данных должен быть указан пол!" })
+			return;
+		}
+
 		personMap.set(person.id, {
 			id: person.id,
 			parents: parents,
+			gender: gender,
 			//pids: parents.length == 0 ? undefined : parents,
 			name: person.properties["Полное имя"].title[0].plain_text,
 		});
 	}
-	console.log(personMap);
 	for (let person of personMap.values()) {
-		person.fid = person.parents[0];
-		person.mid = person.parents[1];
+		person.fid = person.parents.find((id) => personMap.get(id).gender == "male");
+		person.mid = person.parents.find((id) => personMap.get(id).gender == "female");
 		for (const parentId of person.parents) {
-			console.log(parentId);
-			personMap[parentId].pid = personMap[parentId].pid
-				? personMap[parentId].pid
+
+			personMap.get(parentId).pids = personMap.get(parentId).pids
+				? personMap.get(parentId).pids
 				: [];
 			for (const otherParentId of person.parents) {
-				if (otherParentId != parentId) {
-					personMap[parentId].pid.push(otherParentId);
+				if (otherParentId != parentId && !personMap.get(parentId).pids.includes(otherParentId)) {
+					personMap.get(parentId).pids.push(otherParentId);
 				}
 			}
 		}
 		person.parents = undefined;
 	}
 
-	res.json(personMap.values());
+	console.log(personMap.values())
+	res.json(Array.from(personMap.values()));
 });
 
 /*
@@ -318,7 +328,7 @@ app.post("/sync_tree", async function (req, res) {
 				")";
 			parentJoin += parentId + " & ";
 			personMap.get(parentId).drawn = true;
-			for (let i = 0; i < childrenOverlap.length; ) {
+			for (let i = 0; i < childrenOverlap.length;) {
 				if (
 					!personMap
 						.get(parentId)

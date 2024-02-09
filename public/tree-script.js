@@ -11,22 +11,28 @@ window.onload = async function () {
 	}));
 	req.onreadystatechange = function () {
 		if (req.readyState == 4 && req.status == 200) {
-			let family = new FamilyTree(document.getElementById("tree"), {
-				nodeBinding: {
-					field_0: "name",
-				},
-				nodes: JSON.parse(req.responseText),
-				state: {
-					name: "treeState",
-					readFromLocalStorage: true,
-					writeToLocalStorage: true,
-					readFromUrlParams: true,
-					writeToUrlParams: true,
-				},
-			});
-			console.log(req.responseText);
+			const respJson = JSON.parse(req.responseText)
+			console.log(req.responseText)
+			if (respJson.err) {
+				alert(respJson.err)
+			}
+			else {
+				let family = new FamilyTree(document.getElementById("tree"), {
+					nodeBinding: {
+						field_0: "name",
+					},
+					nodes: respJson,
+					// state: {
+					// 	name: "treeState",
+					// 	readFromLocalStorage: true,
+					// 	writeToLocalStorage: true,
+					// 	readFromUrlParams: true,
+					// 	writeToUrlParams: true,
+					// },
+				});
+			}
 		} else if (req.readyState == 4) {
-            console.log(req.responseText);
+			console.log(req.responseText);
 			//window.location.href = "/?error=1";
 		}
 	};
