@@ -62,6 +62,10 @@ app.get("/map", function (req, res) {
 	res.sendFile(staticDir + "/map.html");
 });
 
+app.get("/tree", function (req, res) {
+	res.sendFile(staticDir + "/tree.html");
+});
+
 /*
 	{
 		"access_token": "token"
@@ -161,6 +165,7 @@ function nodeString(id, name)
 
 app.post("/sync_tree", async function (req, res) {
 	const { Client } = require("@notionhq/client");
+	console.log("made client");
 	const notion = new Client({ auth: req.body.access_token });
 
 	const pageQuery = await notion.search({
@@ -249,7 +254,7 @@ app.post("/sync_tree", async function (req, res) {
 		}
 		if (parentJoin.at(-2) === "&") {
 			parentJoin = parentJoin.slice(0, parentJoin.length - 2);
-			let emptyToken = person.id + "empty";
+			let emptyToken = person.id + "e";
 			graphCode += "\n" + emptyToken + "(( ))";
 			graphCode += "\n" + parentJoin + " --- " + emptyToken + ":::empty";
 			if (childrenOverlap.length > 0) {
@@ -263,7 +268,7 @@ app.post("/sync_tree", async function (req, res) {
 			}
 		}
 	}
-
+	console.log(graphCode);
 	const response = await notion.blocks.update({
 		block_id: codeBlock.id,
 		code: {
@@ -271,9 +276,7 @@ app.post("/sync_tree", async function (req, res) {
 				{
 					text: {
 						content: graphCode,
-						link: null,
 					},
-					plain_text: graphCode,
 				},
 			],
 		},
@@ -283,7 +286,7 @@ app.post("/sync_tree", async function (req, res) {
 });
 
 app.post("/auth", async (req, res) => {
-	console.log(req.body.family_id);
+	console.log(req.body.code);
 	const options = {
 		method: "POST",
 		url: "https://api.notion.com/v1/oauth/token",
