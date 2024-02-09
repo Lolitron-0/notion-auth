@@ -78,8 +78,12 @@ app.get("/tree", function (req, res) {
 });
 
 app.post("/tree_data", async function (req, res) {
+	const rows = await pool.query(
+		`select * from tokens where id=${req.body.id}`
+	);
+
 	const { Client } = require("@notionhq/client");
-	const notion = new Client({ auth: req.body.access_token });
+	const notion = new Client({ auth: rows.rows[0].secret });
 
 	const databases = await notion.search({
 		query: "Люди",

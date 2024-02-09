@@ -7,7 +7,7 @@ window.onload = async function () {
         document.getElementById("tree").style.display = "none";
 		document.getElementById("upd-request").style.display = "flex";
 	} else {
-		const token = urlParams.get("access_token");
+		const id = urlParams.get("id");
 
 		var req = new XMLHttpRequest();
 		req.open("POST", "tree_data");
@@ -15,7 +15,7 @@ window.onload = async function () {
 
 		req.send(
 			JSON.stringify({
-				access_token: token,
+				id: id,
 			})
 		);
 		req.onreadystatechange = function () {
