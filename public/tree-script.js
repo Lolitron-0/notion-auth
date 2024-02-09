@@ -1,3 +1,5 @@
+/// <reference path="libs/familytree.d.ts" />
+
 let family = new FamilyTree(document.getElementById("tree"), {
     nodeBinding: {
         field_0: "name"
