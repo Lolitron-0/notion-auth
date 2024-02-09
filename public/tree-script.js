@@ -28,16 +28,16 @@ window.onload = async function () {
                         background-color: #aeaeae;
                     }
                     .{randId}.male .bft-edit-form-header, .{randId}.male .bft-img-button{
-                        background-color: #817f82;
+                        background-color: #8d5bc1;
                     }        
                     .{randId}.male div.bft-img-button:hover{
-                        background-color: #8d5bc1;
+                        background-color: #817f82;
                     }
                     .{randId}.female .bft-edit-form-header, .{randId}.female .bft-img-button{
-                        background-color: #8d5bc1;
+                        background-color: #817f82;
                     }        
                     .{randId}.female div.bft-img-button:hover{
-                        background-color: #817f82;
+                        background-color: #8d5bc1;
                     }
 </style>`;
 
