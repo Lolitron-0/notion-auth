@@ -1,5 +1,3 @@
-const e = require("express");
-
 window.onload = async function () {
 	const urlParams = new URLSearchParams(window.location.search);
 
