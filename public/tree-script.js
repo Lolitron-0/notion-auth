@@ -17,11 +17,24 @@ window.onload = async function () {
 				alert(respJson.err)
 			}
 			else {
+				FamilyTree.templates.tommy_male = Object.assign({}, FamilyTree.templates.tommy);
+				FamilyTree.templates.tommy_male.node = '<rect x="0" y="0" height="{h}" width="{w}" stroke-width="1" fill="#48325c" stroke="#aeaeae" rx="7" ry="7"></rect>';
+				FamilyTree.templates.tommy_female = Object.assign({}, FamilyTree.templates.tommy);
+				FamilyTree.templates.tommy_female.node = '<rect x="0" y="0" height="{h}" width="{w}" stroke-width="1" fill="#817f82" stroke="#aeaeae" rx="7" ry="7"></rect>';
+
 				let family = new FamilyTree(document.getElementById("tree"), {
 					nodeBinding: {
 						field_0: "name",
 					},
 					nodes: respJson,
+					editForm: {
+						readOnly: true, buttons: { share: null, pdf: null },
+						generateElementsFromFields: false,
+						elements: [
+							{ type: 'textbox', label: 'Полное имя', binding: 'name' },
+							{ type: 'textbox', label: 'Пол', binding: 'gender'}
+						]
+					},
 					// state: {
 					// 	name: "treeState",
 					// 	readFromLocalStorage: true,
