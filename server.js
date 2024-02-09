@@ -241,7 +241,7 @@ app.post("/sync_places", async function (req, res) {
 
 async function getTreeBlock(access_token) {
 	const { Client } = require("@notionhq/client");
-	const notion = new Client({ auth: req.body.access_token });
+	const notion = new Client({ auth: access_token });
 
 	const pageQuery = await notion.search({
 		query: "Древо",
