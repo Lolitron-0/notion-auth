@@ -66,6 +66,78 @@ app.get("/tree", function (req, res) {
 	res.sendFile(staticDir + "/tree.html");
 });
 
+app.post("/tree_data", async function (req, res) {
+	const { Client } = require("@notionhq/client");
+	console.log(req.body.access_token);
+	const notion = new Client({ auth: req.body.access_token });
+
+	const pageQuery = await notion.search({
+		query: "Древо",
+		filter: {
+			property: "object",
+			value: "page",
+		},
+	});
+	const pageId = pageQuery.results[0].id;
+
+	const pageContent = await notion.blocks.children.list({
+		block_id: pageId,
+		page_size: 50,
+	});
+
+	let codeBlock;
+	for (const block of pageContent.results) {
+		if (block.type === "code") codeBlock = block;
+	}
+
+	const databases = await notion.search({
+		query: "Люди",
+		filter: {
+			property: "object",
+			value: "database",
+		},
+	});
+	let dbId = databases.results[0].id;
+
+	const peopleQuery = await notion.databases.query({
+		database_id: dbId,
+	});
+
+	const personMap = new Map();
+	for (const person of peopleQuery.results) {
+		const parents = [];
+		for (const parent of person.properties["Родители"].relation) {
+			parents.push(parent.id);
+		}
+
+		personMap.set(person.id, {
+			id: person.id,
+			parents: parents,
+			//pids: parents.length == 0 ? undefined : parents,
+			name: person.properties["Полное имя"].title[0].plain_text,
+		});
+	}
+	console.log(personMap);
+	for (let person of personMap.values()) {
+		person.fid = person.parents[0];
+		person.mid = person.parents[1];
+		for (const parentId of person.parents) {
+			console.log(parentId);
+			personMap[parentId].pid = personMap[parentId].pid
+				? personMap[parentId].pid
+				: [];
+			for (const otherParentId of person.parents) {
+				if (otherParentId != parentId) {
+					personMap[parentId].pid.push(otherParentId);
+				}
+			}
+		}
+		person.parents = undefined;
+	}
+
+	res.json(personMap.values());
+});
+
 /*
 	{
 		"access_token": "token"
@@ -158,9 +230,11 @@ app.post("/sync_places", async function (req, res) {
 	res.json(response);
 });
 
-function nodeString(id, name)
-{
-	return `<a href="https://www.notion.so/${id.replaceAll("-","")}?pvs=4" style="color:white;">${name}</a>`
+function nodeString(id, name) {
+	return `<a href="https://www.notion.so/${id.replaceAll(
+		"-",
+		""
+	)}?pvs=4" style="color:white;">${name}</a>`;
 }
 
 app.post("/sync_tree", async function (req, res) {
@@ -237,7 +311,11 @@ app.post("/sync_tree", async function (req, res) {
 		let childrenOverlap = [];
 		for (const parentId of person.parents) {
 			graphCode +=
-				"\n" + parentId + "(" + nodeString(parentId,personMap.get(parentId).name) + ")";
+				"\n" +
+				parentId +
+				"(" +
+				nodeString(parentId, personMap.get(parentId).name) +
+				")";
 			parentJoin += parentId + " & ";
 			personMap.get(parentId).drawn = true;
 			for (let i = 0; i < childrenOverlap.length; ) {
@@ -260,7 +338,12 @@ app.post("/sync_tree", async function (req, res) {
 			if (childrenOverlap.length > 0) {
 				for (const childId of childrenOverlap) {
 					let child = personMap.get(childId);
-					graphCode += "\n" + childId + "(" + nodeString(childId,child.name) + ")";
+					graphCode +=
+						"\n" +
+						childId +
+						"(" +
+						nodeString(childId, child.name) +
+						")";
 					graphCode +=
 						"\n" + emptyToken + ":::empty" + " ---> " + childId;
 					child.drawn = true;
