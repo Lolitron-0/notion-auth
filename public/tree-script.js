@@ -1,3 +1,9 @@
+function showError(msg) {
+	document.getElementById("tree").style.display = "none";
+	document.getElementById("upd-request").style.display = "flex";
+	document.getElementById("error-inner").innerHTML = msg;
+}
+
 function update() {
 	const urlParams = new URLSearchParams(window.location.search);
 	const id = urlParams.get("id");
@@ -16,7 +22,7 @@ function update() {
 			const respJson = JSON.parse(req.responseText);
 			console.log(req.responseText);
 			if (respJson.err) {
-				alert(respJson.err);
+				showError(respJson.err);
 			} else {
 				FamilyTree.templates.tommy.defs = `<style>
                 .{randId} .bft-edit-form-header, .{randId} .bft-img-button{
@@ -91,11 +97,10 @@ window.onload = async function () {
 	const urlParams = new URLSearchParams(window.location.search);
 
 	if (urlParams.get("update")) {
-		document.getElementById("tree").style.display = "none";
-		document.getElementById("upd-request").style.display = "flex";
+		showError("Пожалуйста, авторизуйтесь через бота");
 	} else {
-        update()
+		update();
 	}
 
-    document.getElementById("update-btn").onclick = update;
+	document.getElementById("update-btn").onclick = update;
 };
