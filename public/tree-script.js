@@ -6,7 +6,8 @@ function showError(msg) {
 
 function update() {
 	const loadingContainer = document.getElementById("loading")
-	loadingContainer.style.display = "inherit";
+	loadingContainer.style.visibility = "visible";
+	loadingContainer.style.opacity = 1;
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const id = urlParams.get("id");
@@ -89,10 +90,13 @@ function update() {
 					// },
 				});
 
-				loadingContainer.style.display = "none";
+				loadingContainer.style.visibility = "hidden";
+				loadingContainer.style.opacity = 0;
 			}
 		} else if (req.readyState == 4) {
 			console.log(req.responseText);
+			loadingContainer.style.visibility = "hidden";
+			loadingContainer.style.opacity = 0;
 			//window.location.href = "/?error=1";
 		}
 	};
