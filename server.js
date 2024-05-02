@@ -77,6 +77,58 @@ app.get("/tree", function (req, res) {
 	res.sendFile(staticDir + "/tree.html");
 });
 
+app.post("/map_data", async function (req, res) {
+	const rows = await pool.query(
+		`select * from tokens where id=${req.body.id}`
+	);
+
+	const { Client } = require("@notionhq/client");
+	const notion = new Client({ auth: rows.rows[0].secret });
+
+	const databases = await notion.search({
+		query: "Хранилище",
+		filter: {
+			property: "object",
+			value: "database",
+		},
+	});
+	let dbId = databases.results[0].id;
+
+	const placesQuery = await notion.databases.query({
+		database_id: dbId,
+		filter: {
+			and: [
+				{
+					property: "Тип",
+					select: {
+						equals: "Место",
+					},
+				},
+			],
+		},
+	});
+
+	const places = [];
+	let x, y;
+	for (const place of placesQuery.results) {
+		x = place.properties["Широта"].rich_text[0];
+		y = place.properties["Долгота"].rich_text[0];
+		if (x && y) {
+			x = parseFloat(x.plain_text);
+			y = parseFloat(y.plain_text);
+			if (x != NaN && y != NaN) {
+				places.push({
+					name: place.properties["Имя"].title[0].plain_text,
+					coords: [x, y],
+				});
+			}
+		}
+	}
+
+	res.json(places)
+
+})
+
 app.post("/tree_data", async function (req, res) {
 	const rows = await pool.query(
 		`select * from tokens where id=${req.body.id}`
@@ -150,121 +202,35 @@ app.post("/tree_data", async function (req, res) {
 	res.json(Array.from(personMap.values()));
 });
 
-/*
-	{
-		"access_token": "token"
-	}
-*/
-app.post("/sync_places", async function (req, res) {
-	const { Client } = require("@notionhq/client");
-	const notion = new Client({ auth: req.body.access_token });
 
-	const pageQuery = await notion.search({
-		query: "Карта",
-		filter: {
-			property: "object",
-			value: "page",
-		},
-	});
-	const pageId = pageQuery.results[0].id;
-
-	const pageContent = await notion.blocks.children.list({
-		block_id: pageId,
-		page_size: 50,
-	});
-
-	let embedBlock;
-	for (const block of pageContent.results) {
-		if (block.type === "embed") embedBlock = block;
-	}
-
-	const databases = await notion.search({
-		query: "Хранилище",
-		filter: {
-			property: "object",
-			value: "database",
-		},
-	});
-	let dbId = databases.results[0].id;
-
-	const placesQuery = await notion.databases.query({
-		database_id: dbId,
-		filter: {
-			and: [
-				{
-					property: "Тип",
-					select: {
-						equals: "Место",
-					},
-				},
-			],
-		},
-	});
-
-	const places = [];
-	let x, y;
-	for (const place of placesQuery.results) {
-		x = place.properties["Широта"].rich_text[0];
-		y = place.properties["Долгота"].rich_text[0];
-		if (x && y) {
-			x = parseFloat(x.plain_text);
-			y = parseFloat(y.plain_text);
-			if (x != NaN && y != NaN) {
-				places.push({
-					name: place.properties["Имя"].title[0].plain_text,
-					coords: [x, y],
-				});
-			}
-		}
-	}
-
-	// https://notion-auth.vercel.app/map?update=1
-	let url = "https://notion-auth.vercel.app/map?coords=";
-	for (const place of places) {
-		url +=
-			place.name +
-			"," +
-			place.coords[0].toString() +
-			"," +
-			place.coords[1].toString() +
-			",";
-	}
-	if (url.at(-1) === ",") url = url.slice(0, url.length - 1);
-
-	const response = await notion.blocks.update({
-		block_id: embedBlock.id,
-		embed: {
-			caption: [],
-			url: url,
-		},
-	});
-
-	res.json(response);
-});
-
-async function getTreeBlock(access_token) {
+async function getEmbedUpdateBlocks(access_token) {
 	const { Client } = require("@notionhq/client");
 	const notion = new Client({ auth: access_token });
+	let result = {}
 
-	const pageQuery = await notion.search({
-		query: "Древо",
-		filter: {
-			property: "object",
-			value: "page",
-		},
-	});
-	const pageId = pageQuery.results[0].id;
+	for (const pageName of ["Древо", "Карта"]) {
+		const pageQuery = await notion.search({
+			query: pageName,
+			filter: {
+				property: "object",
+				value: "page",
+			},
+		});
 
-	const pageContent = await notion.blocks.children.list({
-		block_id: pageId,
-		page_size: 50,
-	});
+		const pageId = pageQuery.results[0].id;
 
-	let embedBlock;
-	for (const block of pageContent.results) {
-		if (block.type === "embed") embedBlock = block;
+		const pageContent = await notion.blocks.children.list({
+			block_id: pageId,
+			page_size: 50,
+		});
+
+		let embedBlock;
+		for (const block of pageContent.results) {
+			if (block.type === "embed") embedBlock = block;
+		}
+		result[pageName] = embedBlock
 	}
-	return embedBlock;
+	return result;
 }
 
 app.post("/auth", async (req, res) => {
@@ -296,18 +262,26 @@ app.post("/auth", async (req, res) => {
 				`insert into tokens(secret) values('${bearerAuthResponse.data.access_token}') returning *`
 			);
 
-			const treeBlock = await getTreeBlock(
+			const embedBlocks = await getEmbedUpdateBlocks(
 				bearerAuthResponse.data.access_token
 			);
 
 			const { Client } = require("@notionhq/client");
 			const notion = new Client({ auth: bearerAuthResponse.data.access_token });
 
-			const response = await notion.blocks.update({
-				block_id: treeBlock.id,
+			const treeUpdateResponse = await notion.blocks.update({
+				block_id: embedBlocks["Древо"].id,
 				embed: {
 					caption: [],
-					url: "https://notion-auth.vercel.app/tree?id="+rows.rows[0].id,
+					url: "https://notion-auth.vercel.app/tree?id=" + rows.rows[0].id,
+				},
+			});
+
+			const mapUpdateResponse = await notion.blocks.update({
+				block_id: embedBlocks["Древо"].id,
+				embed: {
+					caption: [],
+					url: "https://notion-auth.vercel.app/map?id=" + rows.rows[0].id,
 				},
 			});
 
