@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=663d74d4-a298-46e3-ae55-5de08d96750f" type="text/javascript"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=663d74d4-a298-46e3-ae55-5de08d96750f"
+        type="text/javascript"></script>
     <link rel="stylesheet" href="other-style.css" />
     <title>Карта</title>
 </head>
+
 <body>
+    <div class="loading-container" id="loading">
+        <div class="lds-circle">
+            <div></div>
+        </div>
+    </div>
     <div id="map"></div>
     <div class="container" id="upd-request" style="display: none;">
         <h2>Обновите данные через телеграм бота.</h2>
     </div>
     <script src="map-script.js"></script>
 </body>
+
 </html>
