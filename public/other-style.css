@@ -67,20 +67,20 @@ body {
 
 .lds-circle,
 .lds-circle div {
+    box-sizing: border-box;
+}
+
+.lds-circle {
     position: absolute;
     z-index: 9;
     color: black;
     height: 80%;
     aspect-ratio: 1;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate3d(-50%,-50%, 1px);
     top: 50%;
-    box-sizing: border-box;
-}
 
-.lds-circle {
     display: inline-block;
-    transform: translateZ(1px);
 }
 
 .lds-circle>div {
