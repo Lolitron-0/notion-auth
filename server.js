@@ -278,7 +278,7 @@ app.post("/auth", async (req, res) => {
 			});
 
 			const mapUpdateResponse = await notion.blocks.update({
-				block_id: embedBlocks["Древо"].id,
+				block_id: embedBlocks["Карта"].id,
 				embed: {
 					caption: [],
 					url: "https://notion-auth.vercel.app/map?id=" + rows.rows[0].id,
