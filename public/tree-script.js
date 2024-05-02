@@ -1,7 +1,6 @@
-function showError(msg) {
+function showError() {
 	document.getElementById("tree").style.display = "none";
 	document.getElementById("upd-request").style.display = "flex";
-	document.getElementById("error-inner").innerHTML = msg;
 }
 
 function update() {
@@ -106,7 +105,7 @@ window.onload = async function () {
 	const urlParams = new URLSearchParams(window.location.search);
 
 	if (urlParams.get("update")) {
-		showError("Пожалуйста, авторизуйтесь через бота");
+		showError();
 	} else {
 		update();
 	}
