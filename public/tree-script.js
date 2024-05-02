@@ -5,6 +5,9 @@ function showError(msg) {
 }
 
 function update() {
+	const loadingContainer = document.getElementById("loading")
+	loadingContainer.style.display = "inherit";
+
 	const urlParams = new URLSearchParams(window.location.search);
 	const id = urlParams.get("id");
 
@@ -40,7 +43,7 @@ function update() {
                 .{randId}.female div.bft-img-button:hover{
                     background-color: #8d5bc1;
                 }
-</style>`;
+				</style>`;
 
 				FamilyTree.templates.tommy_male = Object.assign(
 					{},
@@ -85,6 +88,8 @@ function update() {
 					// 	writeToUrlParams: true,
 					// },
 				});
+
+				loadingContainer.style.display = "none";
 			}
 		} else if (req.readyState == 4) {
 			console.log(req.responseText);
