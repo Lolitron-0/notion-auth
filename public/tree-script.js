@@ -105,6 +105,7 @@ window.onload = async function () {
 	const urlParams = new URLSearchParams(window.location.search);
 
 	if (urlParams.get("update")) {
+		document.getElementById("update-btn").style.visibility = "hidden";
 		showError();
 	} else {
 		update();
