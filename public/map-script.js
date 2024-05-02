@@ -30,6 +30,7 @@ function update() {
 				{
 					center: places[0] ? places[0].coords : [55.76, 37.64],
 					zoom: 10,
+					controls: ['zoomControl', 'searchControl', 'typeSelector', 'geolocationControl'],
 				},
 				{
 					searchControlProvider: "yandex#search",
@@ -63,7 +64,9 @@ function update() {
 					content: "Обновить данные",
 				},
 				options: {
-					maxWidth: 100,
+					maxWidth: 500,
+					float: "left",
+					selectOnClick: false
 				},
 			});
 
@@ -71,7 +74,7 @@ function update() {
 				update();
 			})
 
-			myMap.controls.add(updateButton, { float: "left" })
+			myMap.controls.add(updateButton)
 
 			document
 				.querySelectorAll("[class*='ground-pane']")
