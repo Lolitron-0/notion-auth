@@ -58,6 +58,21 @@ function update() {
 				);
 			}
 
+			let updateButton = new ymaps.control.Button({
+				data: {
+					content: "Обновить данные",
+				},
+				options: {
+					maxWidth: 100,
+				},
+			});
+
+			updateButton.events.add("click", (e) => {
+				update();
+			})
+
+			myMap.controls.add(updateButton, { float: "left" })
+
 			document
 				.querySelectorAll("[class*='ground-pane']")
 				.forEach((el) => {
@@ -79,8 +94,6 @@ window.onload = () => {
 	} else {
 		update();
 	}
-
-	document.getElementById("update-btn").onclick = update;
 };
 
 
