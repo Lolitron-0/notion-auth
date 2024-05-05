@@ -257,8 +257,6 @@ app.post("/auth", async (req, res) => {
 	axios
 		.request(options)
 		.then(async function (bearerAuthResponse) {
-			console.log(bearerAuthResponse.data.access_token);
-
 			const rows = await pool.query(
 				`insert into tokens(secret) values('${bearerAuthResponse.data.access_token}') returning *`
 			);
@@ -302,7 +300,7 @@ app.post("/auth", async (req, res) => {
 					console.log("ok");
 				})
 				.catch(function (err) {
-					console.log("err");
+					console.log(err);
 				});
 			res.sendStatus(200);
 		})
