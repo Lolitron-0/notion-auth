@@ -1,5 +1,5 @@
 require("dotenv").config();
-const botIP = "5.35.88.123"
+const botIP = "5.35.88.123:80"
 const express = require("express");
 const app = express();
 const axios = require("axios");
