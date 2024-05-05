@@ -1,4 +1,5 @@
 require("dotenv").config();
+const botIP = "5.35.88.123"
 const express = require("express");
 const app = express();
 const axios = require("axios");
@@ -291,7 +292,7 @@ app.post("/auth", async (req, res) => {
 			);
 			const options = {
 				method: "POST",
-				url: "http://45.130.42.38:8000/families/create",
+				url: "http://" + botIP + "/families/create",
 				data: eventsResult,
 			};
 			console.log(eventsResult);
