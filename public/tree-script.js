@@ -26,6 +26,8 @@ function update() {
 			console.log(req.responseText);
 			if (respJson.err) {
 				showError(respJson.err);
+				loadingContainer.style.visibility = "hidden";
+				loadingContainer.style.opacity = 0;
 			} else {
 				FamilyTree.templates.tommy.defs = `<style>
                 .{randId} .bft-edit-form-header, .{randId} .bft-img-button{
