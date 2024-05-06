@@ -25,6 +25,7 @@ async function requestEvents(access_token, family_id) {
 	const { Client } = require("@notionhq/client");
 	const notion = new Client({ auth: access_token });
 
+	// direct events
 	const databases = await notion.search({
 		query: "Хранилище",
 		filter: {
@@ -53,6 +54,38 @@ async function requestEvents(access_token, family_id) {
 		access_token: access_token,
 	};
 	for (const e of events.results) {
+		result.events.push({
+			name: e.properties["Имя"].title[0].plain_text,
+			description: "lol",
+			date: new Date(e.properties["Даты"].date.start),
+			family_id: Number(family_id),
+		});
+	}
+
+	// events from people
+	databases = await notion.search({
+		query: "Люди",
+		filter: {
+			property: "object",
+			value: "database",
+		},
+	});
+	dbId = databases.results[0].id;
+	const peopleEvents = await notion.databases.query({
+		database_id: dbId,
+		// filter: {
+		// 	and: [
+		// 		{
+		// 			property: "Тип",
+		// 			select: {
+		// 				equals: "Событие",
+		// 			},
+		// 		},
+		// 	],
+		// },
+	});
+	console.log(events.results[0]);
+	for (const e of peopleEvents.results) {
 		result.events.push({
 			name: e.properties["Имя"].title[0].plain_text,
 			description: "lol",
