@@ -95,16 +95,17 @@ async function requestEvents(access_token, family_id) {
 				date: new Date(dateObj.start),
 				family_id: Number(family_id),
 			});
+
+			if (dateObj.end) {
+				result.events.push({
+					name: "Умер " + name,
+					description: "lol",
+					date: new Date(dateObj.end),
+					family_id: Number(family_id),
+				});
+			}
 		}
 
-		if (dateObj.end) {
-			result.events.push({
-				name: "Умер " + name,
-				description: "lol",
-				date: new Date(dateObj.end),
-				family_id: Number(family_id),
-			});
-		}
 	}
 	return result;
 }
