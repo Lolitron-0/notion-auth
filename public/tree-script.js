@@ -109,7 +109,7 @@ window.onload = async function () {
 
 	if (urlParams.get("update")) {
 		document.getElementById("update-btn").style.visibility = "hidden";
-		showError();
+		showError("Пожалуйста, авторизуйтесь через телеграм бота.");
 	} else {
 		update();
 	}
