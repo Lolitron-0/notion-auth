@@ -84,14 +84,27 @@ async function requestEvents(access_token, family_id) {
 		// 	],
 		// },
 	});
-	console.log(peopleEvents.results[0]);
 	for (const e of peopleEvents.results) {
-		result.events.push({
-			name: e.properties["Имя"].title[0].plain_text,
-			description: "lol",
-			date: new Date(e.properties["Даты"].date.start),
-			family_id: Number(family_id),
-		});
+		const dateObj = e.properties["Рождение / Смерть"].date;
+		const name = e.properties["Полное имя"].title[0].plain_text;
+
+		if (dateObj.start) {
+			result.events.push({
+				name: "Родился " + name,
+				description: "lol",
+				date: new Date(dateObj.start),
+				family_id: Number(family_id),
+			});
+		}
+
+		if (dateObj.end) {
+			result.events.push({
+				name: "Умер " + name,
+				description: "lol",
+				date: new Date(dateObj.end),
+				family_id: Number(family_id),
+			});
+		}
 	}
 	return result;
 }
@@ -351,8 +364,9 @@ app.get("/events", async function (req, res) {
 	res.json(eventsResult);
 });
 
-const listener = app.listen(process.env.PORT, function () {
+const listener = app.listen(process.env.PORT, async function () {
 	console.log("Your app is listening on port " + listener.address().port);
+	// await requestEvents("secret_Il3FwGtzzolbFzMWaHM62UCeGuMxRXJWSrz1B1Grxbz", 50);
 });
 
 module.exports = app;
