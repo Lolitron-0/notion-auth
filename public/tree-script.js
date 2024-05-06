@@ -1,6 +1,7 @@
-function showError() {
+function showError(text) {
 	document.getElementById("tree").style.display = "none";
 	document.getElementById("upd-request").style.display = "flex";
+	document.getElementById("error-inner").innerHTML = text;
 }
 
 function update() {
