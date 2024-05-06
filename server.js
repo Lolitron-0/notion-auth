@@ -26,7 +26,7 @@ async function requestEvents(access_token, family_id) {
 	const notion = new Client({ auth: access_token });
 
 	// direct events
-	const databases = await notion.search({
+	let databases = await notion.search({
 		query: "Хранилище",
 		filter: {
 			property: "object",
@@ -84,7 +84,7 @@ async function requestEvents(access_token, family_id) {
 		// 	],
 		// },
 	});
-	console.log(events.results[0]);
+	console.log(peopleEvents.results[0]);
 	for (const e of peopleEvents.results) {
 		result.events.push({
 			name: e.properties["Имя"].title[0].plain_text,
