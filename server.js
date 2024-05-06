@@ -88,7 +88,7 @@ async function requestEvents(access_token, family_id) {
 		const dateObj = e.properties["Рождение / Смерть"].date;
 		const name = e.properties["Полное имя"].title[0].plain_text;
 
-		if (dateObj.start) {
+		if (dateObj) {
 			result.events.push({
 				name: "Родился " + name,
 				description: "lol",
