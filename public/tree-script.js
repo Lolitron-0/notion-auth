@@ -48,6 +48,9 @@ function update() {
                 }
 				</style>`;
 
+				FamilyTree.templates.tommy.img_0 = 
+				'<image preserveAspectRatio="xMidYMid" xlink:href="{val}" x="20" y="-15" width="80" height="80"></image>';
+
 				FamilyTree.templates.tommy_male = Object.assign(
 					{},
 					FamilyTree.templates.tommy
@@ -64,6 +67,7 @@ function update() {
 				let family = new FamilyTree(document.getElementById("tree"), {
 					nodeBinding: {
 						field_0: "name",
+						img_0: "img"
 					},
 					nodes: respJson,
 					editForm: {
