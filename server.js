@@ -235,6 +235,7 @@ app.post("/tree_data", async function (req, res) {
 			id: person.id,
 			parents: parents,
 			gender: gender,
+			img: person.cover.file.url,
 			//pids: parents.length == 0 ? undefined : parents,
 			name: person.properties["Полное имя"].title[0].plain_text,
 		});
