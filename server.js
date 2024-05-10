@@ -382,7 +382,7 @@ app.get("/events", async function (req, res) {
 
 const listener = app.listen(process.env.PORT, async function () {
 	console.log("Your app is listening on port " + listener.address().port);
-	await requestEvents(process.env.TEST_KEY, 50);
+	//await requestEvents(process.env.TEST_KEY, 50);
 });
 
 module.exports = app;
