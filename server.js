@@ -25,6 +25,12 @@ async function requestEvents(access_token, family_id) {
 	const { Client } = require("@notionhq/client");
 	const notion = new Client({ auth: access_token });
 
+	const result = {
+		family_id: Number(family_id),
+		events: [],
+		access_token: access_token,
+	};
+
 	// direct events
 	let databases = await notion.search({
 		query: "Хранилище",
@@ -35,32 +41,34 @@ async function requestEvents(access_token, family_id) {
 	});
 	let dbId = databases.results[0].id;
 
-	const events = await notion.databases.query({
-		database_id: dbId,
-		filter: {
-			and: [
-				{
-					property: "Тип",
-					select: {
-						equals: "Событие",
+	let startCursor = undefined;
+
+	do {
+		const events = await notion.databases.query({
+			database_id: dbId,
+			filter: {
+				and: [
+					{
+						property: "Тип",
+						select: {
+							equals: "Событие",
+						},
 					},
-				},
-			],
-		},
-	});
-	const result = {
-		family_id: Number(family_id),
-		events: [],
-		access_token: access_token,
-	};
-	for (const e of events.results) {
-		result.events.push({
-			name: e.properties["Имя"].title[0].plain_text,
-			description: "lol",
-			date: new Date(e.properties["Даты"].date.start),
-			family_id: Number(family_id),
+				],
+			},
+			start_cursor: startCursor
 		});
-	}
+		for (const e of events.results) {
+			result.events.push({
+				name: e.properties["Имя"].title[0].plain_text,
+				description: "lol",
+				date: new Date(e.properties["Даты"].date.start),
+				family_id: Number(family_id),
+			});
+		}
+
+		startCursor = events.next_cursor;
+	} while (startCursor);
 
 	// events from people
 	databases = await notion.search({
@@ -71,44 +79,49 @@ async function requestEvents(access_token, family_id) {
 		},
 	});
 	dbId = databases.results[0].id;
-	const peopleEvents = await notion.databases.query({
-		database_id: dbId,
-		// filter: {
-		// 	and: [
-		// 		{
-		// 			property: "Тип",
-		// 			select: {
-		// 				equals: "Событие",
-		// 			},
-		// 		},
-		// 	],
-		// },
-	});
-	console.log(peopleEvents.results.length);
-	//console.log(peopleEvents);
-	for (const e of peopleEvents.results) {
-		const dateObj = e.properties["Рождение / Смерть"].date;
-		const name = e.properties["Полное имя"].title[0].plain_text;
+	startCursor = undefined;
 
-		if (dateObj) {
-			result.events.push({
-				name: "Родился " + name,
-				description: "lol",
-				date: new Date(dateObj.start),
-				family_id: Number(family_id),
-			});
-
-			if (dateObj.end) {
+	do {
+		const peopleEvents = await notion.databases.query({
+			database_id: dbId,
+			// filter: {
+			// 	and: [
+			// 		{
+			// 			property: "Тип",
+			// 			select: {
+			// 				equals: "Событие",
+			// 			},
+			// 		},
+			// 	],
+			// },
+			start_cursor: startCursor
+		});
+		for (const e of peopleEvents.results) {
+			const dateObj = e.properties["Рождение / Смерть"].date;
+			const name = e.properties["Полное имя"].title[0].plain_text;
+			if (dateObj) {
 				result.events.push({
-					name: "Умер " + name,
+					name: "Родился " + name,
 					description: "lol",
-					date: new Date(dateObj.end),
+					date: new Date(dateObj.start),
 					family_id: Number(family_id),
 				});
+
+				if (dateObj.end) {
+					result.events.push({
+						name: "Умер " + name,
+						description: "lol",
+						date: new Date(dateObj.end),
+						family_id: Number(family_id),
+					});
+				}
 			}
+
 		}
 
-	}
+		startCursor = peopleEvents.next_cursor;
+	} while (startCursor);
+	console.log("Total found events", result.events.length);
 	return result;
 }
 
