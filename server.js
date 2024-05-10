@@ -84,6 +84,8 @@ async function requestEvents(access_token, family_id) {
 		// 	],
 		// },
 	});
+	console.log(peopleEvents.results.length);
+	//console.log(peopleEvents);
 	for (const e of peopleEvents.results) {
 		const dateObj = e.properties["Рождение / Смерть"].date;
 		const name = e.properties["Полное имя"].title[0].plain_text;
@@ -367,7 +369,7 @@ app.get("/events", async function (req, res) {
 
 const listener = app.listen(process.env.PORT, async function () {
 	console.log("Your app is listening on port " + listener.address().port);
-	// await requestEvents("secret_Il3FwGtzzolbFzMWaHM62UCeGuMxRXJWSrz1B1Grxbz", 50);
+	await requestEvents(process.env.TEST_KEY, 50);
 });
 
 module.exports = app;
