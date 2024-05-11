@@ -1,5 +1,5 @@
 require("dotenv").config();
-const botIP = "5.35.88.123:80"
+const botIP = "5.35.88.123:80";
 const express = require("express");
 const app = express();
 const axios = require("axios");
@@ -20,6 +20,18 @@ pool.connect((err) => {
 	if (err) throw err;
 	console.log("Connected to PG");
 });
+
+function formatDate(date) {
+	if (!date) return "";
+
+	return (
+		("0" + date.getDate()).slice(-2) +
+		"." +
+		("0" + (date.getMonth() + 1)).slice(-2) +
+		"." +
+		date.getFullYear()
+	);
+}
 
 async function requestEvents(access_token, family_id) {
 	const { Client } = require("@notionhq/client");
@@ -56,7 +68,7 @@ async function requestEvents(access_token, family_id) {
 					},
 				],
 			},
-			start_cursor: startCursor
+			start_cursor: startCursor,
 		});
 		for (const e of events.results) {
 			result.events.push({
@@ -94,7 +106,7 @@ async function requestEvents(access_token, family_id) {
 			// 		},
 			// 	],
 			// },
-			start_cursor: startCursor
+			start_cursor: startCursor,
 		});
 		for (const e of peopleEvents.results) {
 			const dateObj = e.properties["Рождение / Смерть"].date;
@@ -116,7 +128,6 @@ async function requestEvents(access_token, family_id) {
 					});
 				}
 			}
-
 		}
 
 		startCursor = peopleEvents.next_cursor;
@@ -188,9 +199,8 @@ app.post("/map_data", async function (req, res) {
 		}
 	}
 
-	res.json(places)
-
-})
+	res.json(places);
+});
 
 app.post("/tree_data", async function (req, res) {
 	const rows = await pool.query(
@@ -216,6 +226,7 @@ app.post("/tree_data", async function (req, res) {
 	const personMap = new Map();
 	for (const person of peopleQuery.results) {
 		const parents = [];
+		const dateObj = person.properties["Рождение / Смерть"].date;
 		for (const parent of person.properties["Родители"].relation) {
 			parents.push(parent.id);
 		}
@@ -231,11 +242,17 @@ app.post("/tree_data", async function (req, res) {
 			return;
 		}
 
+		let birth = undefined;
+		if (dateObj?.start) birth = new Date(dateObj.start);
+		let death = undefined;
+		if (dateObj?.end) death = new Date(dateObj.end);
+
 		personMap.set(person.id, {
 			id: person.id,
 			parents: parents,
 			gender: gender,
 			img: person.cover.file.url,
+			dates: formatDate(birth) + " — " + formatDate(death),
 			//pids: parents.length == 0 ? undefined : parents,
 			name: person.properties["Полное имя"].title[0].plain_text,
 		});
@@ -266,11 +283,10 @@ app.post("/tree_data", async function (req, res) {
 	res.json(Array.from(personMap.values()));
 });
 
-
 async function getEmbedUpdateBlocks(access_token) {
 	const { Client } = require("@notionhq/client");
 	const notion = new Client({ auth: access_token });
-	let result = {}
+	let result = {};
 
 	for (const pageName of ["Древо", "Карта"]) {
 		const pageQuery = await notion.search({
@@ -292,7 +308,7 @@ async function getEmbedUpdateBlocks(access_token) {
 		for (const block of pageContent.results) {
 			if (block.type === "embed") embedBlock = block;
 		}
-		result[pageName] = embedBlock
+		result[pageName] = embedBlock;
 	}
 	return result;
 }
@@ -329,13 +345,17 @@ app.post("/auth", async (req, res) => {
 			);
 
 			const { Client } = require("@notionhq/client");
-			const notion = new Client({ auth: bearerAuthResponse.data.access_token });
+			const notion = new Client({
+				auth: bearerAuthResponse.data.access_token,
+			});
 
 			const treeUpdateResponse = await notion.blocks.update({
 				block_id: embedBlocks["Древо"].id,
 				embed: {
 					caption: [],
-					url: "https://notion-auth.vercel.app/tree?id=" + rows.rows[0].id,
+					url:
+						"https://notion-auth.vercel.app/tree?id=" +
+						rows.rows[0].id,
 				},
 			});
 
@@ -343,7 +363,9 @@ app.post("/auth", async (req, res) => {
 				block_id: embedBlocks["Карта"].id,
 				embed: {
 					caption: [],
-					url: "https://notion-auth.vercel.app/map?id=" + rows.rows[0].id,
+					url:
+						"https://notion-auth.vercel.app/map?id=" +
+						rows.rows[0].id,
 				},
 			});
 
