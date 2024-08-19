@@ -386,6 +386,7 @@ app.post("/auth", async (req, res) => {
 				})
 				.catch(function (err) {
 					console.log(err);
+					console.log(eventsResult);
 					res.sendStatus(400);
 				});
 			res.sendStatus(200);
