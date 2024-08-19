@@ -26,6 +26,7 @@ window.onload = () => {
 		req.open("POST", "auth");
 		req.setRequestHeader("Content-Type", "application/json");
 		console.log(sessionStorage.getItem("family_id"));
+		console.log(urlParams.get("code"));
 		req.send(
 			JSON.stringify({
 				code: urlParams.get("code"),
