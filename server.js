@@ -387,12 +387,14 @@ app.post("/auth", async (req, res) => {
 				.catch(function (err) {
 					console.log(err);
 					console.log(eventsResult);
+					console.log("infra api err")
 					res.sendStatus(400);
 				});
 			res.sendStatus(200);
 		})
 		.catch(function (error) {
 			console.log(error);
+			console.log("notion auth err")
 			res.sendStatus(400);
 		});
 });
