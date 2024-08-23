@@ -344,6 +344,7 @@ app.post("/auth", async (req, res) => {
 				bearerAuthResponse.data.access_token
 			);
 
+			console.log(bearerAuthResponse.data.access_token);
 			const { Client } = require("@notionhq/client");
 			const notion = new Client({
 				auth: bearerAuthResponse.data.access_token,
