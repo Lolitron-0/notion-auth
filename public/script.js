@@ -10,7 +10,7 @@ window.onload = () => {
 	} else if (urlParams.get("error") === "1") {
 		document.getElementById("content").innerHTML = `
         <p class="title">Произошла ошибка!</p>
-        <p class="text">Свяжитесь с <a class="link" href="https://t.me/lolitron">@lolitron</a> в Telegram</p>
+        <p class="text">Свяжитесь с <a class="link" href="https://t.me/neyuli">@neyuli</a> в Telegram</p>
         `;
 		document.getElementById("error-icon").style.display = "block";
 	} else if (urlParams.get("family_id")) {
