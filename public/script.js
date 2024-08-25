@@ -11,6 +11,7 @@ window.onload = () => {
 		document.getElementById("content").innerHTML = `
         <p class="title">Произошла ошибка!</p>
         <p class="text">Свяжитесь с <a class="link" href="https://t.me/neyuli">@neyuli</a> в Telegram</p>
+        <p class="text">Информация для отладки: ${urlParams.get("msg")}</p>
         `;
 		document.getElementById("error-icon").style.display = "block";
 	} else if (urlParams.get("family_id")) {
@@ -37,7 +38,7 @@ window.onload = () => {
 			if (req.readyState == 4 && req.status == 200) {
 				window.location.href = "/?success=1";
 			} else if (req.readyState == 4) {
-				window.location.href = "/?error=1";
+				window.location.href = "/?error=1&msg=" + req.responseText;
 			}
 		};
 	}

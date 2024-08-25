@@ -389,14 +389,14 @@ app.post("/auth", async (req, res) => {
 					console.log(err);
 					console.log(eventsResult);
 					console.log("infra api err")
-					res.sendStatus(400);
+					res.status(400).send(err.data)
 				});
 			res.sendStatus(200);
 		})
 		.catch(function (error) {
-			console.log(error.data);
+			console.log();
 			console.log("notion auth err")
-			res.sendStatus(400);
+			res.status(400).send(error.data)
 		});
 });
 
