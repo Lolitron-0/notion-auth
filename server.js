@@ -394,7 +394,7 @@ app.post("/auth", async (req, res) => {
 			res.sendStatus(200);
 		})
 		.catch(function (error) {
-			console.log();
+			console.log(error.response.data);
 			console.log("notion auth err")
 			res.status(400).send(error.data)
 		});
